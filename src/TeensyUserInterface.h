@@ -8,19 +8,19 @@
 
 
 // MIT License
-// 
+//
 // Copyright (c) 2014 Stanley Reifel & Co.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -45,10 +45,10 @@ const int LCD_ORIENTATION_PORTRAIT_4PIN_BOTTOM = 2;
 const int LCD_ORIENTATION_LANDSCAPE_4PIN_RIGHT = 3;
 
 
-// 
+//
 // 16 bit colors in rgb 565 format
 //
-const uint16_t LCD_BLACK =       0x0000; 
+const uint16_t LCD_BLACK =       0x0000;
 const uint16_t LCD_NAVY =        0x000F;
 const uint16_t LCD_DARKGREEN =   0x03E0;
 const uint16_t LCD_DARKCYAN =    0x03EF;
@@ -60,7 +60,7 @@ const uint16_t LCD_DARKGREY =    0x7BEF;
 const uint16_t LCD_BLUE =        0x001F;
 const uint16_t LCD_LIGHTBLUE =   0x5ADF;
 const uint16_t LCD_DARKBLUE =    0x0016;
-const uint16_t LCD_GREEN =       0x07E0; 
+const uint16_t LCD_GREEN =       0x07E0;
 const uint16_t LCD_CYAN =        0x07FF;
 const uint16_t LCD_RED =         0xF800;
 const uint16_t LCD_MAGENTA =     0xF81F;
@@ -77,9 +77,9 @@ typedef ILI9341_t3_font_t ui_font;
 
 
 //
-// definition of a Button, the menu's colors and font are used 
+// definition of a Button, the menu's colors and font are used
 //
-typedef struct 
+typedef struct
 {
   const char *labelText;
   int centerX;
@@ -92,7 +92,7 @@ typedef struct
 //
 // definition of a Button with extended options
 //
-typedef struct 
+typedef struct
 {
   const char *labelText;
   int centerX;
@@ -108,9 +108,9 @@ typedef struct
 
 
 //
-// definition of a integer Number Box 
+// definition of a integer Number Box
 //
-typedef struct 
+typedef struct
 {
   const char *labelText;
   int value;
@@ -125,9 +125,9 @@ typedef struct
 
 
 //
-// definition of a float Number Box 
+// definition of a float Number Box
 //
-typedef struct 
+typedef struct
 {
   const char *labelText;
   float value;
@@ -143,9 +143,9 @@ typedef struct
 
 
 //
-// definition of a Selection Box 
+// definition of a Selection Box
 //
-typedef struct 
+typedef struct
 {
   const char *labelText;
   int value;
@@ -238,7 +238,7 @@ class TeensyUserInterface
     void setMenuColors(uint16_t _menuBackgroundColor, uint16_t _menuButtonColor, uint16_t _menuButtonSelectedColor, uint16_t _menuButtonFrameColor, uint16_t _menuButtonTextColor);
     void setMenuFont(const ui_font &font);
     void displayAndExecuteMenu(MENU_ITEM *menu);
- 
+
     void setTitleBarColors(uint16_t _titleBarColor, uint16_t _titleBarTextColor, uint16_t _titleBarBackButtonColor, uint16_t _titleBarBackButtonSelectedColor);
     void setTitleBarFont(const ui_font &font);
     void drawTitleBar(const char *titleBarText);
@@ -272,8 +272,6 @@ class TeensyUserInterface
 
     boolean checkForTouchEventInRect(int eventType, int rectX1, int rectY1, int rectX2, int rectY2);
     void getTouchEvents(void);
-    void setDefaultTouchScreenCalibrationConstants(int lcdOrientation);
-    void setTouchScreenCalibrationConstants(int tsToLCDOffsetX, float tsToLCDScalerX, int tsToLCDOffsetY, float tsToLCDScalerY);
     boolean getTouchScreenCoords(int *xLCD, int *yLCD);
 
     void lcdClearScreen(uint16_t color);
@@ -346,10 +344,6 @@ class TeensyUserInterface
 
     int numberBoxRepeatCount;
 
-    int touchScreenToLCDOffsetX;
-    float touchScreenToLCDScalerX;
-    int touchScreenToLCDOffsetY;
-    float touchScreenToLCDScalerY;
     int touchState;
 
 
@@ -386,7 +380,7 @@ class TeensyUserInterface
 
     void touchScreenInitialize(int lcdOrientation);
     boolean getRAWTouchScreenCoords(int *xRaw, int *yRaw);
-     
+
     void lcdInitialize(int lcdOrientation, const ui_font &font);
 };
 

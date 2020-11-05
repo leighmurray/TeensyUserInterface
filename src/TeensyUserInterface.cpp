@@ -9,19 +9,19 @@
 
 
 // MIT License
-// 
+//
 // Copyright (c) 2014 Stanley Reifel & Co.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,16 +37,16 @@
 //
 
 //
-// This user interface works with Teensy applications having a 2.8" 320x240 ILI9341 
+// This user interface works with Teensy applications having a 2.8" 320x240 ILI9341
 // LCD touch screen display.  It has only been tested with a Teensy 3.6 but will
-// likely work with other Teensys that support the libraries listed above.  The display 
-// is divided into two sections:  along the top is a Title Bar and below that is the 
-// "Display Space".  The Display Space is where menus, message boxes, configuration 
+// likely work with other Teensys that support the libraries listed above.  The display
+// is divided into two sections:  along the top is a Title Bar and below that is the
+// "Display Space".  The Display Space is where menus, message boxes, configuration
 // screens, along with the application's main display are shown.
 //
 // The heart of this user interface are menus.  Menus are display as rows and columns of
-// touch sensitive buttons.  There are three types of menu buttons: Commands, Toggles 
-// and Sub Menus.  Menus are displayed by creating a "Menu Table", then calling: 
+// touch sensitive buttons.  There are three types of menu buttons: Commands, Toggles
+// and Sub Menus.  Menus are displayed by creating a "Menu Table", then calling:
 // displayAndExecuteMenu()
 //
 // A typical main menu table might look like this:
@@ -60,83 +60,83 @@
 //    {MENU_ITEM_TYPE_END_OF_MENU,      "",                     NULL,                 NULL}
 //  };
 //
-// The first line in the table always defines what type of menu it is, either a Main 
-// Menu, or a Sub Menu.  The table's last line marks the end of the table.  In between 
+// The first line in the table always defines what type of menu it is, either a Main
+// Menu, or a Sub Menu.  The table's last line marks the end of the table.  In between
 // are menu items, one line for each button that's displayed on the menu.
 //
-// A menu can have as many buttons as you like, simply by adding more entries to the menu 
+// A menu can have as many buttons as you like, simply by adding more entries to the menu
 // table.  Buttons are sized such that they always fill the screen, adding more causes
-// them to be shorter in height.  In many cases it is advantageous to arrange a menu's 
-// buttons in two or more columns.  Columns of buttons often look better, are easier to  
+// them to be shorter in height.  In many cases it is advantageous to arrange a menu's
+// buttons in two or more columns.  Columns of buttons often look better, are easier to
 // touch, and you can fit more on a single screen.
 //
-// The buttons on a menu can be arranged in 1, 2, 3 or 4 columns.  The number of columns 
-// is set in the third field of the menu table's first line by inserting one of these 
+// The buttons on a menu can be arranged in 1, 2, 3 or 4 columns.  The number of columns
+// is set in the third field of the menu table's first line by inserting one of these
 // values:
 //           MENU_COLUMNS_1, MENU_COLUMNS_2, MENU_COLUMNS_3, or MENU_COLUMNS_4
 
 //
 // There are 3 different types of buttons that can be added to a menu table:
 //
-// Command:  A MENU_ITEM_TYPE_COMMAND indicates that a function will be executed  
+// Command:  A MENU_ITEM_TYPE_COMMAND indicates that a function will be executed
 // when this menu button is pressed.  In the second field is the text displayed
 // on the button.  A pointer to the function is entered into the third field of
 // the table.
 //
-// Toggle:  A MENU_ITEM_TYPE_TOGGLE is used somewhat like a Radio Button in a dialog 
-// box.  It allows the user to select one of a fixed number of choices (such as  
-// On / Off,   or   Red / Green / Blue).  Each time the user presses this button, 
-// it alternates the selection (i.e. toggles between On and Off, or rotates between 
-// Red, Green and Blue).  The third field in this entry points to a callback 
+// Toggle:  A MENU_ITEM_TYPE_TOGGLE is used somewhat like a Radio Button in a dialog
+// box.  It allows the user to select one of a fixed number of choices (such as
+// On / Off,   or   Red / Green / Blue).  Each time the user presses this button,
+// it alternates the selection (i.e. toggles between On and Off, or rotates between
+// Red, Green and Blue).  The third field in this entry points to a callback
 // function that alternates the value.
 //
-// Sub Menu:  A MENU_ITEM_TYPE_SUB_MENU is used to select a different menu.  For 
-// example, a main menu might reference a "Settings" sub menu. The fourth field  
+// Sub Menu:  A MENU_ITEM_TYPE_SUB_MENU is used to select a different menu.  For
+// example, a main menu might reference a "Settings" sub menu. The fourth field
 // in this entry points to another menu table where the sub menu is defined.
 //
-// As described above, the first line in a menu table indicates the type of menu.  
+// As described above, the first line in a menu table indicates the type of menu.
 // There are 2 types:
 //
-// Main Menu:  A MENU_ITEM_TYPE_MAIN_MENU_HEADER in the first line of the table  
-// specifies that it is a main menu (a main menu may have child menus, but no 
-// parent menus).  The three other columns in this line define more about the menu.  
+// Main Menu:  A MENU_ITEM_TYPE_MAIN_MENU_HEADER in the first line of the table
+// specifies that it is a main menu (a main menu may have child menus, but no
+// parent menus).  The three other columns in this line define more about the menu.
 // The second field contains text printed on the LCD's Title Bar when the menu is
-// displayed.  The next column sets how the buttons are arranged on the screen.  
-// Legal values for this field are: MENU_COLUMNS_1, MENU_COLUMNS_2, MENU_COLUMNS_3,  
-// or MENU_COLUMNS_4.  The fourth field controls if a "Back" button is displayed on 
-// the Title Bar for this menu.  Assigning the fourth field "mainMenu" (or what 
-// every you named this menu table) will NOT show the "Back" button.  Alternately 
-// if the fourth field is set to NULL, the "Back" button is included.  In this 
+// displayed.  The next column sets how the buttons are arranged on the screen.
+// Legal values for this field are: MENU_COLUMNS_1, MENU_COLUMNS_2, MENU_COLUMNS_3,
+// or MENU_COLUMNS_4.  The fourth field controls if a "Back" button is displayed on
+// the Title Bar for this menu.  Assigning the fourth field "mainMenu" (or what
+// every you named this menu table) will NOT show the "Back" button.  Alternately
+// if the fourth field is set to NULL, the "Back" button is included.  In this
 // case pressing "Back" will exit all menus, returning to the main application.
 //
-// Sub Menu:  A MENU_ITEM_TYPE_SUB_MENU_HEADER in the first line specifies that the 
-// table defines a sub menu.  Sub menus are menus that are called from a main menu, 
-// or another sub menu.  The fourth field in this line is a pointer back to the 
-// parent menu table (typically this would be the main menu).  This is used to 
-// reselect the parent menu when the user presses the "Back" button while the sub 
+// Sub Menu:  A MENU_ITEM_TYPE_SUB_MENU_HEADER in the first line specifies that the
+// table defines a sub menu.  Sub menus are menus that are called from a main menu,
+// or another sub menu.  The fourth field in this line is a pointer back to the
+// parent menu table (typically this would be the main menu).  This is used to
+// reselect the parent menu when the user presses the "Back" button while the sub
 // menu is displayed.
 //
 // Typically applications have one or more menus, each having several buttons.  Each
-// of these buttons invokes a separate "Command" that is written by the application's 
-// developer.  These command may directly do something or display something; or they 
+// of these buttons invokes a separate "Command" that is written by the application's
+// developer.  These command may directly do something or display something; or they
 // might prompt the user for more information.
 //
 // To help the developer create screens that prompt the user for more information,
-// this user interface include three touch sensitive widgets that can be easily  
+// this user interface include three touch sensitive widgets that can be easily
 // added to custom screens.  They are:
 //
-// Buttons:  Buttons are often used to exit screens with labels such as "OK" or   
+// Buttons:  Buttons are often used to exit screens with labels such as "OK" or
 // "Cancel", but can also be used to execute other commands such as "Start" or "Stop".
 //
-// Number Boxes:  Number boxes allow the user to enter a number by pressing Up and 
+// Number Boxes:  Number boxes allow the user to enter a number by pressing Up and
 // Down.  Numbers can be integers or floats.
 //
-// Selection Boxes:  Selection boxes present choices to the user to pick between, 
+// Selection Boxes:  Selection boxes present choices to the user to pick between,
 // such as On / Off; or Low / Medium / High
 //
-// In addition to these widgets, there are many primitive functions for drawing to 
-// the LCD display.  They include functions for drawing text, lines, circles, 
-// rectangles...  For drawing text there are many font sizes to choose from.  The  
+// In addition to these widgets, there are many primitive functions for drawing to
+// the LCD display.  They include functions for drawing text, lines, circles,
+// rectangles...  For drawing text there are many font sizes to choose from.  The
 // Arial fonts that look best are: 8, 8Bold, 9, 9Bold, 12Bold, 13
 //
 //
@@ -151,7 +151,7 @@
 //    Teensy 3.3V       LCD LED BACKLIGHT
 //    Teensy D12        LCD SDO
 //    Teensy D13        TOUCH CLK
-//    Teensy D8         TOUCH CS 
+//    Teensy D8         TOUCH CS
 //    Teensy D11        TOUCH DIN
 //    Teensy D12        TOUCH D0
 //
@@ -160,23 +160,27 @@
 
 #include <EEPROM.h>
 #include <ILI9341_t3.h>
-#include <XPT2046_Touchscreen.h>
+#include <Adafruit_FT6206.h>
 #include "TeensyUserInterface.h"
 
 
 //
 // pin assignments, note: the LCD also uses hardware SPI with MOSI pin 11, MISO pin 12, SCK pin 13
 //
-const byte LCD_DC_PIN = 9;
+const byte LCD_DC_PIN = 6;
 const byte LCD_CS_PIN = 10;
-const byte TOUCH_CS_PIN = 8;
+const byte LCD_RST_PIN = 255; // Not used
+const byte LCD_MOSI_PIN = 7;
+const byte LCD_SLCK_PIN = 14;
+const byte LCD_MISO_PIN = 12;
+const byte TOUCH_CS_PIN = 30;
 
 
 //
 // create the LCD and Touch objects
 //
-ILI9341_t3 lcd = ILI9341_t3(LCD_CS_PIN, LCD_DC_PIN);
-XPT2046_Touchscreen ts(TOUCH_CS_PIN);
+ILI9341_t3 lcd = ILI9341_t3(LCD_CS_PIN, LCD_DC_PIN, LCD_RST_PIN, LCD_MOSI_PIN, LCD_SLCK_PIN, LCD_MISO_PIN);
+Adafruit_FT6206 ts = Adafruit_FT6206();
 
 //
 // the size of features for drawing the user interface
@@ -263,14 +267,14 @@ void TeensyUserInterface::setColorPaletteGray(void)
                                       uint16_t menuButtonSelectedColor         = titleBarBackButtonSelectedColor;
   red = 12; green = 24; blue = 12-4;  uint16_t menuButtonFrameColor            = lcdMakeColor(red, green, blue);
                                       uint16_t menuButtonTextColor             = LCD_WHITE;
-                                      
+
   setTitleBarColors(titleBarColor, titleBarTextColor, titleBarBackButtonColor, titleBarBackButtonSelectedColor);
   setMenuColors(menuBackgroundColor, menuButtonColor, menuButtonSelectedColor, menuButtonFrameColor, menuButtonTextColor);
 }
 
 
 // ---------------------------------------------------------------------------------
-//                                   Menu functions  
+//                                   Menu functions
 // ---------------------------------------------------------------------------------
 
 //
@@ -314,12 +318,12 @@ void TeensyUserInterface::displayAndExecuteMenu(MENU_ITEM *menu)
 {
   int menuIdx;
   MENU_ITEM *parentMenu;
-  
+
   //
   // display the top level menu
   //
   selectAndDrawMenu(menu);
- 
+
   //
   // check for screen touches and execute menu commands
   //
@@ -396,7 +400,7 @@ void TeensyUserInterface::executeMenuItem(int menuIdx)
   // determine the type of menu entry, then execute it
   //
   switch(currentMenuTable[menuIdx].MenuItemType)
-  {    
+  {
     //
     // select a "Sub menu" from the current menu
     //
@@ -406,7 +410,7 @@ void TeensyUserInterface::executeMenuItem(int menuIdx)
       selectAndDrawMenu(subMenu);
       break;
     }
-    
+
     //
     // execute the menu item's function
     //
@@ -416,14 +420,14 @@ void TeensyUserInterface::executeMenuItem(int menuIdx)
       // execute the menu item's function
       //
       (currentMenuTable[menuIdx].MenuItemFunction)();
-      
+
       //
       // display the menu again
       //
       selectAndDrawMenu(currentMenuTable);
       break;
     }
-    
+
     //
     // toggle the menu item, then redisplay
     //
@@ -443,14 +447,14 @@ void TeensyUserInterface::executeMenuItem(int menuIdx)
 //  Enter:  menu -> the menu to display
 //
 void TeensyUserInterface::selectAndDrawMenu(MENU_ITEM *menu)
-{   
+{
   //
   // remember the currently selected menu
   //
   currentMenuTable = menu;
 
   //
-  // draw the title bar, decide if should include the "Back" button (don't show the 
+  // draw the title bar, decide if should include the "Back" button (don't show the
   // Back button if this is the main menu and it links back to itself)
   //
   if ((currentMenuTable[0].MenuItemType == MENU_ITEM_TYPE_MAIN_MENU_HEADER) &&
@@ -458,7 +462,7 @@ void TeensyUserInterface::selectAndDrawMenu(MENU_ITEM *menu)
     drawTitleBar(currentMenuTable[0].MenuItemText);
   else
     drawTitleBarWithBackButton(currentMenuTable[0].MenuItemText);
-   
+
   //
   // clear the display space
   //
@@ -477,9 +481,9 @@ void TeensyUserInterface::selectAndDrawMenu(MENU_ITEM *menu)
 //  Enter:  currentMenuTable -> the menu to display
 //
 void TeensyUserInterface::drawMenu(void)
-{ 
+{
   int menuIdx = 1;
- 
+
   //
   // loop through the menu, drawing each button
   //
@@ -506,7 +510,7 @@ void TeensyUserInterface::drawMenuItem(int menuIdx, boolean buttonSelectedFlg)
   int buttonY;
   int buttonWidth;
   int buttonHeight;
- 
+
   //
   // determine the coordinates and size of the button, then draw it
   //
@@ -516,15 +520,15 @@ void TeensyUserInterface::drawMenuItem(int menuIdx, boolean buttonSelectedFlg)
   // get the button text
   //
   const char *menuItemText = currentMenuTable[menuIdx].MenuItemText;
-    
+
   //
   // determine the menu entry type and draw it
   //
   switch(currentMenuTable[menuIdx].MenuItemType)
-  {    
+  {
     //
     // display a "sub menu" button
-    //    
+    //
     case MENU_ITEM_TYPE_SUB_MENU:
     {
       //
@@ -555,7 +559,7 @@ void TeensyUserInterface::drawMenuItem(int menuIdx, boolean buttonSelectedFlg)
 
     //
     // display a "toggle" button
-    //    
+    //
     case MENU_ITEM_TYPE_TOGGLE:
     {
       //
@@ -589,7 +593,7 @@ int TeensyUserInterface::findMenuButtonForTouchEvent(void)
   int menuIdx = 1;
   int buttonX, buttonY;
   int buttonWidth, buttonHeight;
- 
+
   //
   // loop through the menu, testing each button location
   //
@@ -618,17 +622,17 @@ int TeensyUserInterface::findMenuButtonForTouchEvent(void)
 
 
 //
-// get the XY coords and size of a menu button 
+// get the XY coords and size of a menu button
 //  Enter:  menuIdx = index into the menu table of the button to get coords for
 //          buttonX, buttonY -> storage to return XY coords of the button
 //          buttonWidth, buttonHeight -> storage to return size of the button
 //
-void TeensyUserInterface::getMenuButtonSizeAndLocation(int menuIdx, int *buttonX, int *buttonY, 
+void TeensyUserInterface::getMenuButtonSizeAndLocation(int menuIdx, int *buttonX, int *buttonY,
   int *buttonWidth, int *buttonHeight)
 {
   int menuButtonNumber = menuIdx - 1;
   int buttonCountOnThisRow;
-  
+
   //
   // count the total number of buttons
   //
@@ -649,7 +653,7 @@ void TeensyUserInterface::getMenuButtonSizeAndLocation(int menuIdx, int *buttonX
   int columnsOfButtons = (int) currentMenuTable[0].MenuItemFunction;
   if ((columnsOfButtons < 1) || (columnsOfButtons > 4))
     columnsOfButtons = 1;
-    
+
   int rowsOfButtons = (buttonCount + columnsOfButtons - 1) / columnsOfButtons;
 
   //
@@ -682,14 +686,14 @@ void TeensyUserInterface::getMenuButtonSizeAndLocation(int menuIdx, int *buttonX
     buttonCountOnThisRow = buttonCount % columnsOfButtons;
 
   int leftMostButtonX = displaySpaceLeftX + (displaySpaceWidth - (*buttonWidth * buttonCountOnThisRow) - (paddingBetweenButtons*(buttonCountOnThisRow-1))) / 2;
-  
+
   *buttonX = leftMostButtonX + (*buttonWidth + paddingBetweenButtons) * buttonColumn;
   *buttonY = displaySpaceTopY + paddingOnTopAndBottomOfButtons + (*buttonHeight + paddingBetweenButtons) * buttonRow;
 }
 
 
 // ---------------------------------------------------------------------------------
-//                                 Title bar functions  
+//                                 Title bar functions
 // ---------------------------------------------------------------------------------
 
 const int TITLE_BAR_BUTTON_TYPE_NONE  = 0;
@@ -703,7 +707,7 @@ const int TITLE_BAR_BUTTON_TYPE_MENU  = 2;
 //          _titleBarTextColor = RGB565 color for the title bar's text
 //          _titleBarBackButtonColor = RGB565 color for the back button on the title bar
 //
-void TeensyUserInterface::setTitleBarColors(uint16_t _titleBarColor, uint16_t _titleBarTextColor, 
+void TeensyUserInterface::setTitleBarColors(uint16_t _titleBarColor, uint16_t _titleBarTextColor,
   uint16_t _titleBarBackButtonColor, uint16_t _titleBarBackButtonSelectedColor)
 {
     titleBarColor = _titleBarColor;
@@ -762,7 +766,7 @@ void TeensyUserInterface::drawTitleBar(const char *titleBarText, int buttonType)
   // remember if the title bar includes a button
   //
   buttonTypeOnTitleBar = buttonType;
-  
+
   //
   // draw the "bar" of the title bar along the top of the screen
   //
@@ -786,7 +790,7 @@ void TeensyUserInterface::drawTitleBar(const char *titleBarText, int buttonType)
     int backButtonY;
 
     getBackButtonSizeAndLocation(&backButtonX, &backButtonY, &backButtonWidth, &backButtonHeight);
-    if (titleBarTextX < backButtonX + backButtonWidth + 6) 
+    if (titleBarTextX < backButtonX + backButtonWidth + 6)
       titleBarTextX = backButtonX + backButtonWidth + 6;
   }
 
@@ -799,9 +803,9 @@ void TeensyUserInterface::drawTitleBar(const char *titleBarText, int buttonType)
   int menuButtonWidth;
   int menuButtonX;
   int menuButtonY;
-  
+
   getMenuButtonSizeAndLocation(&menuButtonX, &menuButtonY, &menuButtonWidth, &menuButtonHeight);
-    if (titleBarTextX < menuButtonX + menuButtonWidth + 6) 
+    if (titleBarTextX < menuButtonX + menuButtonWidth + 6)
       titleBarTextX = menuButtonX + menuButtonWidth + 6;
   }
 
@@ -812,7 +816,7 @@ void TeensyUserInterface::drawTitleBar(const char *titleBarText, int buttonType)
   lcdSetFontColor(titleBarTextColor);
   int titleBarTextY = (titleBarHeight / 2) - (lcdGetFontHeightWithoutDecenders() / 2);
   lcdSetCursorXY(titleBarTextX, titleBarTextY);
-  lcdPrint(titleBarText); 
+  lcdPrint(titleBarText);
 
   //
   // optionally draw the Back button
@@ -853,8 +857,8 @@ void TeensyUserInterface::drawTitleBarBackButton(boolean buttonSelectedFlg)
     buttonColor = titleBarBackButtonSelectedColor;
   else
     buttonColor = titleBarBackButtonColor;
-  
-  lcdDrawFilledRoundedRectangle(backButtonX, backButtonY, backButtonWidth, backButtonHeight, 
+
+  lcdDrawFilledRoundedRectangle(backButtonX, backButtonY, backButtonWidth, backButtonHeight,
     backButtonRadius, buttonColor);
 
   //
@@ -903,8 +907,8 @@ void TeensyUserInterface::drawTitleBarMenuButton(boolean buttonSelectedFlg)
     buttonColor = titleBarBackButtonSelectedColor;
   else
     buttonColor = titleBarBackButtonColor;
-  
-  lcdDrawFilledRoundedRectangle(menuButtonX, menuButtonY, menuButtonWidth, menuButtonHeight, 
+
+  lcdDrawFilledRoundedRectangle(menuButtonX, menuButtonY, menuButtonWidth, menuButtonHeight,
     menuButtonRadius, buttonColor);
 
   //
@@ -913,7 +917,7 @@ void TeensyUserInterface::drawTitleBarMenuButton(boolean buttonSelectedFlg)
   int menuLinesWidth = menuButtonWidth / 2;
   int menuLinesLeftX = menuButtonX + menuButtonWidth/2 - menuLinesWidth/2;
   int menuLinesMiddleY =  menuButtonY + menuButtonHeight/2 - 1;
-  
+
   lcdDrawFilledRectangle(menuLinesLeftX, menuLinesMiddleY, menuLinesWidth, 2, menuButtonTextColor);
   lcdDrawFilledRectangle(menuLinesLeftX, menuLinesMiddleY - 6, menuLinesWidth, 2, menuButtonTextColor);
   lcdDrawFilledRectangle(menuLinesLeftX, menuLinesMiddleY + 6, menuLinesWidth, 2, menuButtonTextColor);
@@ -944,14 +948,14 @@ boolean TeensyUserInterface::checkForBackButtonClicked(void)
     //
     if (touchEventType == TOUCH_NO_EVENT)
       return(false);
-      
+
     //
     // get the coordinates of the Back button
     //
     getBackButtonSizeAndLocation(&X1, &Y1, &buttonWidth, &buttonHeight);
     int X2 = X1 + buttonWidth - 1;
     int Y2 = Y1 + buttonHeight - 1;
-    
+
     //
     // check if most recent event was: this button "PUSHED"
     //
@@ -960,7 +964,7 @@ boolean TeensyUserInterface::checkForBackButtonClicked(void)
       drawTitleBarBackButton(true);
       return(false);
     }
-    
+
     //
     // check if most recent event was: this button "RELEASED"
     //
@@ -970,7 +974,7 @@ boolean TeensyUserInterface::checkForBackButtonClicked(void)
       return(true);
     }
   }
-  
+
   //
   // most recent event didn't match anything here
   //
@@ -1002,14 +1006,14 @@ boolean TeensyUserInterface::checkForMenuButtonClicked(void)
     //
     if (touchEventType == TOUCH_NO_EVENT)
       return(false);
-      
+
     //
     // get the coordinates of the Menu button
     //
     getMenuButtonSizeAndLocation(&X1, &Y1, &buttonWidth, &buttonHeight);
     int X2 = X1 + buttonWidth - 1;
     int Y2 = Y1 + buttonHeight - 1;
-    
+
     //
     // check if most recent event was: this button "PUSHED"
     //
@@ -1018,7 +1022,7 @@ boolean TeensyUserInterface::checkForMenuButtonClicked(void)
       drawTitleBarMenuButton(true);
       return(false);
     }
-    
+
     //
     // check if most recent event was: this button "RELEASED"
     //
@@ -1028,7 +1032,7 @@ boolean TeensyUserInterface::checkForMenuButtonClicked(void)
       return(true);
     }
   }
-  
+
   //
   // most recent event didn't match anything here
   //
@@ -1038,11 +1042,11 @@ boolean TeensyUserInterface::checkForMenuButtonClicked(void)
 
 
 //
-// get the XY coords and size of a title bar "Back" button 
+// get the XY coords and size of a title bar "Back" button
 //  Enter:  buttonX, buttonY -> storage to return XY coords of the button
 //          buttonWidth, buttonHeight -> storage to return size of the button
 //
-void TeensyUserInterface::getBackButtonSizeAndLocation(int *buttonX, int *buttonY, 
+void TeensyUserInterface::getBackButtonSizeAndLocation(int *buttonX, int *buttonY,
   int *buttonWidth, int *buttonHeight)
 {
   lcdSetFont(*titleBarFont);
@@ -1051,14 +1055,14 @@ void TeensyUserInterface::getBackButtonSizeAndLocation(int *buttonX, int *button
   *buttonHeight = titleBarHeight - 6;
   int backButtonRadius = *buttonHeight / 2;
   *buttonWidth = backButtonRadius + arrowWidth*2 + lcdStringWidthInPixels(backButtonText) + backButtonRadius - 3;
-  *buttonX = 4;
+  *buttonX = lcdWidth - *buttonWidth - 4;
   *buttonY = (titleBarHeight - *buttonHeight) / 2;
 }
 
 
 
 //
-// get the XY coords and size of a title bar "Menu" button 
+// get the XY coords and size of a title bar "Menu" button
 //  Enter:  buttonX, buttonY -> storage to return XY coords of the button
 //          buttonWidth, buttonHeight -> storage to return size of the button
 //
@@ -1066,16 +1070,16 @@ void TeensyUserInterface::getMenuButtonSizeAndLocation(int *buttonX, int *button
 {
   *buttonHeight = titleBarHeight - 6;
   *buttonWidth = (*buttonHeight * 18) / 10;
-  *buttonX = 4;
+  *buttonX = lcdWidth - *buttonWidth - 4;
   *buttonY = (titleBarHeight - *buttonHeight) / 2;
 }
 
 // ---------------------------------------------------------------------------------
-//                               Display space functions  
+//                               Display space functions
 // ---------------------------------------------------------------------------------
 
 //
-// clear the screen's "display space" using the menu's background color and draw a frame around it 
+// clear the screen's "display space" using the menu's background color and draw a frame around it
 //
 void TeensyUserInterface::clearDisplaySpace(void)
 {
@@ -1087,7 +1091,7 @@ void TeensyUserInterface::clearDisplaySpace(void)
 //  Enter:  backgroundColor = color to fill the display space
 //
 void TeensyUserInterface::clearDisplaySpace(uint16_t backgroundColor)
-{  
+{
   //
   // draw the frame
   //
@@ -1103,7 +1107,7 @@ void TeensyUserInterface::clearDisplaySpace(uint16_t backgroundColor)
 
 
 // ---------------------------------------------------------------------------------
-//                                  Button functions  
+//                                  Button functions
 // ---------------------------------------------------------------------------------
 
 //
@@ -1116,8 +1120,8 @@ void TeensyUserInterface::drawButton(BUTTON &uiButton)
   if (buttonX < 0) buttonX = 0;
   int buttonY = uiButton.centerY - uiButton.height/2;
   if (buttonY < 0) buttonY = 0;
-  
-  drawButton(uiButton.labelText, buttonX, buttonY, uiButton.width, uiButton.height, menuButtonColor, 
+
+  drawButton(uiButton.labelText, buttonX, buttonY, uiButton.width, uiButton.height, menuButtonColor,
     menuButtonFrameColor, menuButtonTextColor, *menuButtonFont);
 }
 
@@ -1139,8 +1143,8 @@ void TeensyUserInterface::drawButton(BUTTON &uiButton, boolean showButtonTouched
     buttonColor = menuButtonSelectedColor;
   else
     buttonColor = menuButtonColor;
-  
-  drawButton(uiButton.labelText, buttonX, buttonY, uiButton.width, uiButton.height, buttonColor, 
+
+  drawButton(uiButton.labelText, buttonX, buttonY, uiButton.width, uiButton.height, buttonColor,
     menuButtonFrameColor, menuButtonTextColor, *menuButtonFont);
 }
 
@@ -1154,8 +1158,8 @@ void TeensyUserInterface::drawButton(BUTTON_EXTENDED &uiButtonExt)
   if (buttonX < 0) buttonX = 0;
   int buttonY = uiButtonExt.centerY - uiButtonExt.height/2;
   if (buttonY < 0) buttonY = 0;
-  
-  drawButton(uiButtonExt.labelText, buttonX, buttonY, uiButtonExt.width, uiButtonExt.height, 
+
+  drawButton(uiButtonExt.labelText, buttonX, buttonY, uiButtonExt.width, uiButtonExt.height,
     uiButtonExt.buttonColor, uiButtonExt.buttonFrameColor, uiButtonExt.buttonTextColor, uiButtonExt.buttonFont);
 }
 
@@ -1177,8 +1181,8 @@ void TeensyUserInterface::drawButton(BUTTON_EXTENDED &uiButtonExt, boolean showB
     buttonColor = uiButtonExt.buttonSelectedColor;
   else
     buttonColor = uiButtonExt.buttonColor;
-  
-  drawButton(uiButtonExt.labelText, buttonX, buttonY, uiButtonExt.width, uiButtonExt.height, 
+
+  drawButton(uiButtonExt.labelText, buttonX, buttonY, uiButtonExt.width, uiButtonExt.height,
     buttonColor, uiButtonExt.buttonFrameColor, uiButtonExt.buttonTextColor, uiButtonExt.buttonFont);
 }
 
@@ -1189,7 +1193,7 @@ void TeensyUserInterface::drawButton(BUTTON_EXTENDED &uiButtonExt, boolean showB
 //          buttonX, buttonY = screen coords for the button's upper left corner
 //          buttonWidth, buttonHeight = size of the button
 //
-void TeensyUserInterface::drawButton(const char *labelText, boolean showButtonTouchedFlg, 
+void TeensyUserInterface::drawButton(const char *labelText, boolean showButtonTouchedFlg,
   int buttonX, int buttonY, int buttonWidth, int buttonHeight)
 {
   uint16_t buttonColor;
@@ -1199,7 +1203,7 @@ void TeensyUserInterface::drawButton(const char *labelText, boolean showButtonTo
   else
     buttonColor = menuButtonColor;
 
-  drawButton(labelText, buttonX, buttonY, buttonWidth, buttonHeight, buttonColor, 
+  drawButton(labelText, buttonX, buttonY, buttonWidth, buttonHeight, buttonColor,
     menuButtonFrameColor, menuButtonTextColor, *menuButtonFont);
 }
 
@@ -1213,8 +1217,8 @@ void TeensyUserInterface::drawButton(const char *labelText, boolean showButtonTo
 //          buttonTextColor = color for the button's text
 //          buttonFont -> font for the button's text
 //
-void TeensyUserInterface::drawButton(const char *labelText, int buttonX, int buttonY, int buttonWidth, 
-  int buttonHeight, uint16_t buttonColor, uint16_t buttonFrameColor, uint16_t buttonTextColor, 
+void TeensyUserInterface::drawButton(const char *labelText, int buttonX, int buttonY, int buttonWidth,
+  int buttonHeight, uint16_t buttonColor, uint16_t buttonFrameColor, uint16_t buttonTextColor,
   const ui_font &buttonFont)
 {
   //
@@ -1228,7 +1232,7 @@ void TeensyUserInterface::drawButton(const char *labelText, int buttonX, int but
   // draw the text on the button
   //
   lcdSetFont(buttonFont);
-  lcdSetCursorXY(buttonX + buttonWidth/2, buttonY + (buttonHeight / 2) - (lcdGetFontHeightWithoutDecenders()/2));  
+  lcdSetCursorXY(buttonX + buttonWidth/2, buttonY + (buttonHeight / 2) - (lcdGetFontHeightWithoutDecenders()/2));
   lcdSetFontColor(buttonTextColor);
   lcdPrintCentered(labelText);
 }
@@ -1254,7 +1258,7 @@ boolean TeensyUserInterface::checkForButtonClicked(BUTTON &uiButton)
   int Y1 = uiButton.centerY - uiButton.height/2;
   int X2 = X1 + uiButton.width - 1;
   int Y2 = Y1 + uiButton.height - 1;
-  
+
   //
   // check if most recent event was: this button "PUSHED"
   //
@@ -1263,7 +1267,7 @@ boolean TeensyUserInterface::checkForButtonClicked(BUTTON &uiButton)
     drawButton(uiButton, true);
     return(false);
   }
-  
+
   //
   // check if most recent event was: this button "RELEASED"
   //
@@ -1298,7 +1302,7 @@ boolean TeensyUserInterface::checkForButtonClicked(BUTTON_EXTENDED &uiButton)
   int Y1 = uiButton.centerY - uiButton.height/2;
   int X2 = X1 + uiButton.width - 1;
   int Y2 = Y1 + uiButton.height - 1;
-  
+
   //
   // check if most recent event was: this button "PUSHED"
   //
@@ -1307,7 +1311,7 @@ boolean TeensyUserInterface::checkForButtonClicked(BUTTON_EXTENDED &uiButton)
     drawButton(uiButton, true);
     return(false);
   }
-  
+
   //
   // check if most recent event was: this button "RELEASED"
   //
@@ -1343,7 +1347,7 @@ boolean TeensyUserInterface::checkForButtonAutoRepeat(BUTTON &uiButton)
   int Y1 = uiButton.centerY - uiButton.height/2;
   int X2 = X1 + uiButton.width - 1;
   int Y2 = Y1 + uiButton.height - 1;
-  
+
   //
   // check if most recent event was: this button "PUSHED"
   //
@@ -1352,13 +1356,13 @@ boolean TeensyUserInterface::checkForButtonAutoRepeat(BUTTON &uiButton)
     drawButton(uiButton, true);
     return(true);
   }
-  
+
   //
   // check if most recent event was: this button "REPEATING"
   //
   if (checkForTouchEventInRect(TOUCH_REPEAT_EVENT, X1, Y1, X2, Y2))
     return(true);
-  
+
   //
   // check if most recent event was: this button "RELEASED"
   //
@@ -1392,7 +1396,7 @@ boolean TeensyUserInterface::checkForButtonAutoRepeat(BUTTON_EXTENDED &uiButton)
   int Y1 = uiButton.centerY - uiButton.height/2;
   int X2 = X1 + uiButton.width - 1;
   int Y2 = Y1 + uiButton.height - 1;
-  
+
   //
   // check if most recent event was: this button "PUSHED"
   //
@@ -1401,13 +1405,13 @@ boolean TeensyUserInterface::checkForButtonAutoRepeat(BUTTON_EXTENDED &uiButton)
     drawButton(uiButton, true);
     return(true);
   }
-  
+
   //
   // check if most recent event was: this button "REPEATING"
   //
   if (checkForTouchEventInRect(TOUCH_REPEAT_EVENT, X1, Y1, X2, Y2))
     return(true);
-  
+
   //
   // check if most recent event was: this button "RELEASED"
   //
@@ -1444,7 +1448,7 @@ boolean TeensyUserInterface::checkForButtonFirstTouched(BUTTON &uiButton)
   int Y1 = uiButton.centerY - uiButton.height/2;
   int X2 = X1 + uiButton.width - 1;
   int Y2 = Y1 + uiButton.height - 1;
-  
+
   //
   // check if most recent event was: this button "PUSHED"
   //
@@ -1453,7 +1457,7 @@ boolean TeensyUserInterface::checkForButtonFirstTouched(BUTTON &uiButton)
     drawButton(uiButton, true);
     return(true);
   }
- 
+
   //
   // most recent event didn't match anything here
   //
@@ -1481,7 +1485,7 @@ boolean TeensyUserInterface::checkForButtonFirstTouched(BUTTON_EXTENDED &uiButto
   int Y1 = uiButton.centerY - uiButton.height/2;
   int X2 = X1 + uiButton.width - 1;
   int Y2 = Y1 + uiButton.height - 1;
-  
+
   //
   // check if most recent event was: this button "PUSHED"
   //
@@ -1490,7 +1494,7 @@ boolean TeensyUserInterface::checkForButtonFirstTouched(BUTTON_EXTENDED &uiButto
     drawButton(uiButton, true);
     return(true);
   }
- 
+
   //
   // most recent event didn't match anything here
   //
@@ -1499,7 +1503,7 @@ boolean TeensyUserInterface::checkForButtonFirstTouched(BUTTON_EXTENDED &uiButto
 
 
 // ---------------------------------------------------------------------------------
-//                                 Number Box functions  
+//                                 Number Box functions
 // ---------------------------------------------------------------------------------
 
 //
@@ -1515,7 +1519,7 @@ void TeensyUserInterface::drawNumberBox(NUMBER_BOX &numberBox)
   int buttonWidth;
   int numberWidth;
   int height;
-  
+
   //
   // get the coordinates of this Number Box
   //
@@ -1578,7 +1582,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX &numberBox)
   int buttonWidth;
   int numberWidth;
   int height;
-  
+
   //
   // return if there is No Event
   //
@@ -1593,7 +1597,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX &numberBox)
   int Y1 = topY;
   int X2 = downButtonX + buttonWidth - 1;
   int Y2 = topY + height - 1;
-  
+
   //
   // Down button: check if justed "PUSHED"
   //
@@ -1604,7 +1608,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX &numberBox)
     numberBoxRepeatCount = 0;
     return(true);
   }
-  
+
   //
   // Down button: check if "REPEATING"
   //
@@ -1615,7 +1619,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX &numberBox)
     updateNumberBoxNumber(numberBox, -stepSize);
     return(true);
   }
-  
+
   //
   // Down button: check if "RELEASED"
   //
@@ -1631,7 +1635,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX &numberBox)
   //
   X1 = upButtonX;
   X2 = upButtonX + buttonWidth - 1;
-  
+
   //
   // Up button: check if justed "PUSHED"
   //
@@ -1642,7 +1646,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX &numberBox)
     numberBoxRepeatCount = 0;
     return(true);
   }
-  
+
   //
   // Up button: check if "REPEATING"
   //
@@ -1653,7 +1657,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX &numberBox)
     updateNumberBoxNumber(numberBox, stepSize);
     return(true);
   }
-  
+
   //
   // Up button: check if "RELEASED"
   //
@@ -1690,7 +1694,7 @@ void TeensyUserInterface::drawDownButtonInNumberBox(NUMBER_BOX &numberBox, boole
   // get the coordinates of this Number Box
   //
   getNumberBoxCoordinates(numberBox, &downButtonX, &numberX, &upButtonX, &topY, &buttonWidth, &numberWidth, &height);
-  
+
   //
   // draw the "down" button
   //
@@ -1700,7 +1704,7 @@ void TeensyUserInterface::drawDownButtonInNumberBox(NUMBER_BOX &numberBox, boole
     buttonColor = menuButtonColor;
 
   lcdDrawFilledRectangle(downButtonX+3, topY+3, buttonWidth-6, height-6, buttonColor);
-  
+
   int arrowCenterX = downButtonX + buttonWidth/2;
   int arrowCenterY = numberBox.centerY;
   int arrowHalfWidth = 5;
@@ -1731,7 +1735,7 @@ void TeensyUserInterface::drawUpButtonInNumberBox(NUMBER_BOX &numberBox, boolean
   // get the coordinates of this Number Box
   //
   getNumberBoxCoordinates(numberBox, &downButtonX, &numberX, &upButtonX, &topY, &buttonWidth, &numberWidth, &height);
-  
+
   //
   // draw the "up" button
   //
@@ -1739,9 +1743,9 @@ void TeensyUserInterface::drawUpButtonInNumberBox(NUMBER_BOX &numberBox, boolean
     buttonColor = menuButtonSelectedColor;
   else
     buttonColor = menuButtonColor;
-     
+
   lcdDrawFilledRectangle(upButtonX+3, topY+3, buttonWidth-6, height-6, buttonColor);
-  
+
   int arrowCenterX = upButtonX + buttonWidth/2;
   int arrowCenterY = numberBox.centerY;
   int arrowHalfWidth = 5;
@@ -1837,7 +1841,7 @@ void TeensyUserInterface::drawNumberInNumberBox(NUMBER_BOX &numberBox)
 // get LCD coordinates and sizes about the given Number Box
 //  Enter:  numberBox -> the specifications of the Number Box
 //
-void TeensyUserInterface::getNumberBoxCoordinates(NUMBER_BOX &numberBox, int *downButtonX, int *numberX, 
+void TeensyUserInterface::getNumberBoxCoordinates(NUMBER_BOX &numberBox, int *downButtonX, int *numberX,
   int *upButtonX, int *topY, int *buttonWidth, int *numberWidth, int *height)
 {
   *buttonWidth = (numberBox.height * 16) / 10;
@@ -1873,11 +1877,11 @@ void TeensyUserInterface::drawNumberBox(NUMBER_BOX_FLOAT &numberBox)
   int buttonWidth;
   int numberWidth;
   int height;
-  
+
   //
   // get the coordinates of this Number Box
   //
-  getNumberBoxCoordinatesFloat(numberBox, &downButtonX, &numberX, &upButtonX, &topY, 
+  getNumberBoxCoordinatesFloat(numberBox, &downButtonX, &numberX, &upButtonX, &topY,
     &buttonWidth, &numberWidth, &height);
 
   //
@@ -1937,7 +1941,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX_FLOAT &numberBo
   int buttonWidth;
   int numberWidth;
   int height;
-  
+
   //
   // return if there is No Event
   //
@@ -1952,7 +1956,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX_FLOAT &numberBo
   int Y1 = topY;
   int X2 = downButtonX + buttonWidth - 1;
   int Y2 = topY + height - 1;
-  
+
   //
   // Down button: check if justed "PUSHED"
   //
@@ -1963,7 +1967,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX_FLOAT &numberBo
     numberBoxRepeatCount = 0;
     return(true);
   }
-  
+
   //
   // Down button: check if "REPEATING"
   //
@@ -1974,7 +1978,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX_FLOAT &numberBo
     updateNumberBoxNumberFloat(numberBox, -stepSize);
     return(true);
   }
-  
+
   //
   // Down button: check if "RELEASED"
   //
@@ -1990,7 +1994,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX_FLOAT &numberBo
   //
   X1 = upButtonX;
   X2 = upButtonX + buttonWidth - 1;
-  
+
   //
   // Up button: check if justed "PUSHED"
   //
@@ -2001,7 +2005,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX_FLOAT &numberBo
     numberBoxRepeatCount = 0;
     return(true);
   }
-  
+
   //
   // Up button: check if "REPEATING"
   //
@@ -2012,7 +2016,7 @@ boolean TeensyUserInterface::checkForNumberBoxTouched(NUMBER_BOX_FLOAT &numberBo
     updateNumberBoxNumberFloat(numberBox, stepSize);
     return(true);
   }
-  
+
   //
   // Up button: check if "RELEASED"
   //
@@ -2050,7 +2054,7 @@ void TeensyUserInterface::drawDownButtonInNumberBoxFloat(NUMBER_BOX_FLOAT &numbe
   // get the coordinates of this Number Box
   //
   getNumberBoxCoordinatesFloat(numberBox, &downButtonX, &numberX, &upButtonX, &topY, &buttonWidth, &numberWidth, &height);
-  
+
   //
   // draw the "down" button
   //
@@ -2060,7 +2064,7 @@ void TeensyUserInterface::drawDownButtonInNumberBoxFloat(NUMBER_BOX_FLOAT &numbe
     buttonColor = menuButtonColor;
 
   lcdDrawFilledRectangle(downButtonX+3, topY+3, buttonWidth-6, height-6, buttonColor);
-  
+
   int arrowCenterX = downButtonX + buttonWidth/2;
   int arrowCenterY = numberBox.centerY;
   int arrowHalfWidth = 5;
@@ -2091,7 +2095,7 @@ void TeensyUserInterface::drawUpButtonInNumberBoxFloat(NUMBER_BOX_FLOAT &numberB
   // get the coordinates of this Number Box
   //
   getNumberBoxCoordinatesFloat(numberBox, &downButtonX, &numberX, &upButtonX, &topY, &buttonWidth, &numberWidth, &height);
-  
+
   //
   // draw the "up" button
   //
@@ -2099,9 +2103,9 @@ void TeensyUserInterface::drawUpButtonInNumberBoxFloat(NUMBER_BOX_FLOAT &numberB
     buttonColor = menuButtonSelectedColor;
   else
     buttonColor = menuButtonColor;
-     
+
   lcdDrawFilledRectangle(upButtonX+3, topY+3, buttonWidth-6, height-6, buttonColor);
-  
+
   int arrowCenterX = upButtonX + buttonWidth/2;
   int arrowCenterY = numberBox.centerY;
   int arrowHalfWidth = 5;
@@ -2199,7 +2203,7 @@ void TeensyUserInterface::drawNumberInNumberBoxFloat(NUMBER_BOX_FLOAT &numberBox
 // get LCD coordinates and sizes about the given Number Box (FLOAT)
 //  Enter:  numberBox -> the specifications of the Number Box
 //
-void TeensyUserInterface::getNumberBoxCoordinatesFloat(NUMBER_BOX_FLOAT &numberBox, int *downButtonX, int *numberX, 
+void TeensyUserInterface::getNumberBoxCoordinatesFloat(NUMBER_BOX_FLOAT &numberBox, int *downButtonX, int *numberX,
   int *upButtonX, int *topY, int *buttonWidth, int *numberWidth, int *height)
 {
   *buttonWidth = (numberBox.height * 16) / 10;
@@ -2222,7 +2226,7 @@ void TeensyUserInterface::getNumberBoxCoordinatesFloat(NUMBER_BOX_FLOAT &numberB
 
 
 // ---------------------------------------------------------------------------------
-//                               Selection Box functions  
+//                               Selection Box functions
 // ---------------------------------------------------------------------------------
 
 //
@@ -2233,13 +2237,13 @@ void TeensyUserInterface::drawSelectionBox(SELECTION_BOX &selectionBox)
 {
   int X, Y;
   int width, height;
-  
+
   //
   // determine how many cells in the selection box & coordinates of the first one
   //
   int numberOfCells = countSelectionBoxChoices(selectionBox);
   getCoordsOfSelectionBoxCell(selectionBox, 0, &X, &Y, &width, &height);
-  
+
   //
   // draw a box to contain call the cells
   //
@@ -2251,7 +2255,7 @@ void TeensyUserInterface::drawSelectionBox(SELECTION_BOX &selectionBox)
   //
   for (int cellNumber = 0; cellNumber < numberOfCells; cellNumber++)
     drawSelectionBoxCell(selectionBox, cellNumber, false);
-  
+
   //
   // draw optional text above the Selection Box
   //
@@ -2275,7 +2279,7 @@ boolean TeensyUserInterface::checkForSelectionBoxTouched(SELECTION_BOX &selectio
 {
   int X, Y;
   int width, height;
-  
+
   //
   // return if there is No Event
   //
@@ -2327,7 +2331,7 @@ boolean TeensyUserInterface::checkForSelectionBoxTouched(SELECTION_BOX &selectio
   //
   return(false);
 }
-  
+
 
 
 //
@@ -2341,7 +2345,7 @@ void TeensyUserInterface::drawSelectionBoxCell(SELECTION_BOX &selectionBox, int 
   int X, Y;
   int width, height;
   uint16_t cellColor;
-  
+
   getCoordsOfSelectionBoxCell(selectionBox, cellNumber, &X, &Y, &width, &height);
 
   //
@@ -2387,7 +2391,7 @@ void TeensyUserInterface::drawSelectionBoxCell(SELECTION_BOX &selectionBox, int 
 //          X, Y -> storage to return upper left corner of cell
 //          width, height -> storage to return size of the cell
 //
-void TeensyUserInterface::getCoordsOfSelectionBoxCell(SELECTION_BOX &selectionBox, int cellNumber, int *X, 
+void TeensyUserInterface::getCoordsOfSelectionBoxCell(SELECTION_BOX &selectionBox, int cellNumber, int *X,
   int *Y, int *width, int *height)
 {
   int numberOfCells = countSelectionBoxChoices(selectionBox);
@@ -2397,7 +2401,7 @@ void TeensyUserInterface::getCoordsOfSelectionBoxCell(SELECTION_BOX &selectionBo
   *Y = selectionBox.centerY - (selectionBox.height-3)/2;
   *height = selectionBox.height-3;
   *width = cellWidth;
- 
+
   *X = (selectionBox.centerX - overallWidth/2) + (cellNumber * cellWidth);
 }
 
@@ -2424,7 +2428,7 @@ int TeensyUserInterface::countSelectionBoxChoices(SELECTION_BOX &selectionBox)
 
 
 // ---------------------------------------------------------------------------------
-//                                Touch screen functions  
+//                                Touch screen functions
 // ---------------------------------------------------------------------------------
 
 //
@@ -2455,8 +2459,6 @@ const long TOUCH_AUTO_REPEAT_RATE = 120;
 void TeensyUserInterface::touchScreenInitialize(int lcdOrientation)
 {
   ts.begin();
-  ts.setRotation((lcdOrientation + 2) % 4);
-  setDefaultTouchScreenCalibrationConstants(lcdOrientation);
   touchState = WAITING_FOR_TOUCH_DOWN_STATE;
 }
 
@@ -2493,7 +2495,7 @@ boolean TeensyUserInterface::checkForTouchEventInRect(int eventType, int rectX1,
 //
 // check touch screen for new events
 //  Exit:   touchEventType = touch event type, TOUCH_NO_EVENT if no event
-//          touchEventX, touchEventY = LCD coordinates of touch event 
+//          touchEventX, touchEventY = LCD coordinates of touch event
 //
 void TeensyUserInterface::getTouchEvents(void)
 {
@@ -2528,7 +2530,7 @@ void TeensyUserInterface::getTouchEvents(void)
          touchEventStartTime = currentTime;
       }
       return;
-     } 
+     }
 
 
     //
@@ -2538,7 +2540,7 @@ void TeensyUserInterface::getTouchEvents(void)
     {
       if (currentTime < (touchEventStartTime + TOUCH_DEBOUNCE_PERIOD))
         return;                                             // wait until debounce period complete
-  
+
       //
       // check if the screen didn't stay touched
       //
@@ -2553,20 +2555,20 @@ void TeensyUserInterface::getTouchEvents(void)
       //
       recordedTouchX = currentTouchX;                       // save coordinates where the touch occurred
       recordedTouchY = currentTouchY;
-      
+
       touchEventStartTime = currentTime;                    // start auto repeat timer
-      touchState = WAITING_FOR_TOUCH_UP_STATE;  
+      touchState = WAITING_FOR_TOUCH_UP_STATE;
 
       touchEventX = recordedTouchX;                         // return "screen has been pressed" event
       touchEventY = recordedTouchY;
-      touchEventType = TOUCH_PUSHED_EVENT; 
+      touchEventType = TOUCH_PUSHED_EVENT;
       return;
     }
 
 
     //
     // check if waiting for the touch to be released
-    //      
+    //
     case WAITING_FOR_TOUCH_UP_STATE:
     {
       //
@@ -2583,16 +2585,16 @@ void TeensyUserInterface::getTouchEvents(void)
       //
       if (currentTime < (touchEventStartTime + TOUCH_AUTO_REPEAT_DELAY))
         return;                                             // no, return no event
-                                           
+
       touchEventStartTime = currentTime;                    // yes auto repeat, reset auto repeat timer
       touchState = WAITING_FOR_TOUCH_UP_AFTER_AUTO_REPEAT_STATE;
 
       touchEventX = recordedTouchX;                         // return "touch is auto repeating" event
       touchEventY = recordedTouchY;
       touchEventType = TOUCH_REPEAT_EVENT;
-      return; 
+      return;
     }
-     
+
 
     //
     // check if auto repeat has started, waiting more repeats
@@ -2607,13 +2609,13 @@ void TeensyUserInterface::getTouchEvents(void)
         touchState = CONFIRM_TOUCH_UP_STATE;                // not touched now, wait to debounce
         return;
       }
- 
+
       //
       // still touched, check if time to auto repeat
       //
       if (currentTime < (touchEventStartTime + TOUCH_AUTO_REPEAT_RATE))
         return;                        // no, return no event
-                                           
+
       touchEventStartTime = currentTime;                    // yes, reset auto repeat timer
 
       touchEventX = recordedTouchX;                         // return "auto repeat" event
@@ -2621,7 +2623,7 @@ void TeensyUserInterface::getTouchEvents(void)
       touchEventType = TOUCH_REPEAT_EVENT;
       return;
     }
-  
+
 
     //
     // touch has been released, verify that it stays released for a period of time
@@ -2636,13 +2638,13 @@ void TeensyUserInterface::getTouchEvents(void)
         touchEventStartTime = currentTime;                  // touched again, reset timer & return no event
         return;
       }
-      
+
       //
       // check if debounce period has elapsed
       //
       if (currentTime < (touchEventStartTime + TOUCH_DEBOUNCE_PERIOD))
         return;                                             // delay period not up, return no event
-  
+
       //
       // touch has been released now
       //
@@ -2655,65 +2657,6 @@ void TeensyUserInterface::getTouchEvents(void)
     }
   }
 }
-
-
-
-//
-// set default calibration constants for converting to LCD coordinates
-//  Enter:  lcdOrientation = LCD_ORIENTATION_PORTRAIT_4PIN_TOP, LCD_ORIENTATION_LANDSCAPE_4PIN_LEFT
-//                           LCD_ORIENTATION_PORTRAIT_4PIN_BOTTOM, LCD_ORIENTATION_LANDSCAPE_4PIN_RIGHT
-//
-void TeensyUserInterface::setDefaultTouchScreenCalibrationConstants(int lcdOrientation)
-{
-  switch(lcdOrientation)
-  {
-    case LCD_ORIENTATION_PORTRAIT_4PIN_TOP:
-    {
-      setTouchScreenCalibrationConstants(20 - 4, 14.90,    17, 11.07);
-      break;
-    }
-    
-    case LCD_ORIENTATION_LANDSCAPE_4PIN_LEFT:
-    {
-      setTouchScreenCalibrationConstants(17, 11.07,    20, 14.90);
-      break;
-    }
-    
-    case LCD_ORIENTATION_PORTRAIT_4PIN_BOTTOM:
-    {
-     setTouchScreenCalibrationConstants(20, 14.90,     35, 11.07);
-     break;
-    }
-    
-    case LCD_ORIENTATION_LANDSCAPE_4PIN_RIGHT:
-    default:
-    {
-      setTouchScreenCalibrationConstants(35, 11.06,    19, 14.84);
-      break;
-    }
-  }
-}
-
-
-
-//
-// set the touch screen calibration constants used for converting from
-// touch coordinates to LCD coordinates
-//  Enter:  tsToLCDOffsetX = touch screen X offset calibration constant
-//          tsToLCDScalerX = touch screen X scaler calibration constant
-//          tsToLCDOffsetY = touch screen Y offset calibration constant
-//          tsToLCDScalerY = touch screen Y scaler calibration constant
-//
-void TeensyUserInterface::setTouchScreenCalibrationConstants(int tsToLCDOffsetX, 
-  float tsToLCDScalerX, int tsToLCDOffsetY, float tsToLCDScalerY)
-{
-  touchScreenToLCDOffsetX = tsToLCDOffsetX;
-  touchScreenToLCDScalerX = tsToLCDScalerX;
-  touchScreenToLCDOffsetY = tsToLCDOffsetY;
-  touchScreenToLCDScalerY = tsToLCDScalerY;
-}
-
-
 
 //
 // get the XY values of where to touch screen is being touched (in LCD space)
@@ -2734,11 +2677,13 @@ boolean TeensyUserInterface::getTouchScreenCoords(int *xLCD, int *yLCD)
   //
   // convert the coordinates into LCD space
   //
-  int x = (int)((float)xRaw / touchScreenToLCDScalerX) - touchScreenToLCDOffsetX;
-  *xLCD = constrain(x, 0, lcdWidth - 1);
 
-  int y = (int)((float)yRaw / touchScreenToLCDScalerY) - touchScreenToLCDOffsetY;
-  *yLCD = constrain(y, 0, lcdHeight - 1);
+  xRaw = map(xRaw, 0, 240, 240, 0);
+  yRaw = map(yRaw, 0, 320, 320, 0);
+
+  *xLCD = constrain(lcdWidth - yRaw, 0, lcdWidth - 1);
+
+  *yLCD = constrain(xRaw, 0, lcdHeight - 1);
 
   return(true);
 }
@@ -2770,7 +2715,7 @@ boolean TeensyUserInterface::getRAWTouchScreenCoords(int *xRaw, int *yRaw)
 
 
 // ---------------------------------------------------------------------------------
-//                                    LCD functions  
+//                                    LCD functions
 // ---------------------------------------------------------------------------------
 
 //
@@ -2784,7 +2729,7 @@ void TeensyUserInterface::lcdInitialize(int lcdOrientation, const ui_font &font)
   lcd.begin();
   lcd.setRotation(lcdOrientation);
   lcdClearScreen(LCD_BLACK);
-  lcdSetFontColor(LCD_WHITE);  
+  lcdSetFontColor(LCD_WHITE);
   lcdSetFont(font);
   lcdSetCursorXY(0, 0);
 
@@ -2995,7 +2940,7 @@ void TeensyUserInterface::lcdSetFontColor(uint16_t color)
 
 //
 // print a string to the LCD display
-//  Enter:  s -> a null terminated string 
+//  Enter:  s -> a null terminated string
 //
 void TeensyUserInterface::lcdPrint(char *s)
 {
@@ -3011,12 +2956,12 @@ void TeensyUserInterface::lcdPrint(const char *s)
 
 //
 // print a signed int at location of the cursor
-//  Enter:  n = signed number to print 
+//  Enter:  n = signed number to print
 //
 void TeensyUserInterface::lcdPrint(int n)
 {
   char stringBuffer[14];
-  
+
   itoa(n, stringBuffer, 10);
   lcdPrint(stringBuffer);
 }
@@ -3025,7 +2970,7 @@ void TeensyUserInterface::lcdPrint(int n)
 
 //
 // print a float or double at location of the cursor
-//  Enter:  n = signed number to print 
+//  Enter:  n = signed number to print
 //          digitsRightOfDecimal = number of digits to display right of decimal point (optional)
 //
 void TeensyUserInterface::lcdPrint(double n, int digitsRightOfDecimal)
@@ -3040,7 +2985,7 @@ void TeensyUserInterface::lcdPrint(double n, int digitsRightOfDecimal)
 
 //
 // print a string to the LCD, right justified at the cursor
-//  Enter:  s -> string to print 
+//  Enter:  s -> string to print
 //
 void TeensyUserInterface::lcdPrintRightJustified(char *s)
 {
@@ -3054,7 +2999,7 @@ void TeensyUserInterface::lcdPrintRightJustified(char *s)
   if (cursorX < 0)                              // set the new cursor position
     cursorX = 0;
   lcdSetCursorXY(cursorX, cursorY);
-  
+
   lcdPrint(s);                                  // print the string
 }
 
@@ -3066,13 +3011,13 @@ void TeensyUserInterface::lcdPrintRightJustified(const char *s)
 
 
 //
-// print a signed int on the LCD, right justify at the cursor 
-//  Enter:  n = signed number to print 
+// print a signed int on the LCD, right justify at the cursor
+//  Enter:  n = signed number to print
 //
 void TeensyUserInterface::lcdPrintRightJustified(int n)
 {
   char stringBuffer[14];
-  
+
   itoa(n, stringBuffer, 10);
   lcdPrintRightJustified(stringBuffer);
 }
@@ -3080,8 +3025,8 @@ void TeensyUserInterface::lcdPrintRightJustified(int n)
 
 
 //
-// print a float on the LCD, right justify at the cursor 
-//  Enter:  n = signed number to print 
+// print a float on the LCD, right justify at the cursor
+//  Enter:  n = signed number to print
 //          digitsRightOfDecimal = number of digits to display right of decimal point (optional)
 //
 void TeensyUserInterface::lcdPrintRightJustified(double n, int digitsRightOfDecimal)
@@ -3095,8 +3040,8 @@ void TeensyUserInterface::lcdPrintRightJustified(double n, int digitsRightOfDeci
 
 
 //
-// print a string to the LCD, centered side-to-side at the cursor 
-//  Enter:  s -> string to print 
+// print a string to the LCD, centered side-to-side at the cursor
+//  Enter:  s -> string to print
 //
 void TeensyUserInterface::lcdPrintCentered(char *s)
 {
@@ -3110,7 +3055,7 @@ void TeensyUserInterface::lcdPrintCentered(char *s)
   if (cursorX < 0)                              // set the new cursor position
     cursorX = 0;
   lcdSetCursorXY(cursorX, cursorY);
-  
+
   lcdPrint(s);                                  // print the string
 }
 
@@ -3123,12 +3068,12 @@ void TeensyUserInterface::lcdPrintCentered(const char *s)
 
 //
 // print a signed int to the LCD, centered side-to-side at the cursor
-//  Enter:  n = signed number to print 
+//  Enter:  n = signed number to print
 //
 void TeensyUserInterface::lcdPrintCentered(int n)
 {
   char stringBuffer[14];
-  
+
   itoa(n, stringBuffer, 10);
   lcdPrintCentered(stringBuffer);
 }
@@ -3138,7 +3083,7 @@ void TeensyUserInterface::lcdPrintCentered(int n)
 //
 // print a float to the LCD, centered side-to-side at the cursor
 //          digitsRightOfDecimal = number of digits to display right of decimal point (optional)
-//  Enter:  n = signed number to print 
+//  Enter:  n = signed number to print
 //
 void TeensyUserInterface::lcdPrintCentered(double n, int digitsRightOfDecimal)
 {
@@ -3205,7 +3150,7 @@ void TeensyUserInterface::lcdSetCursorXY(int x, int y)
 {
   if ((x < 0) || (x >= lcdWidth)) return;
   if ((y < 0) || (y >= lcdHeight)) return;
-  
+
   lcd.setCursor(x, y);
 }
 
@@ -3248,15 +3193,15 @@ uint16_t TeensyUserInterface::lcdMakeColor(int red, int green, int blue)
 
 //
 // write a configuration byte (8 bit) to the EEPROM
-//  Enter:  EEPromAddress = address in EEPROM to write 
+//  Enter:  EEPromAddress = address in EEPROM to write
 //          value = 8 bit value to write to EEPROM
-//          note: 2 bytes of EEPROM space are used 
+//          note: 2 bytes of EEPROM space are used
 //
 void TeensyUserInterface::writeConfigurationByte(int EEPromAddress, byte value)
 {
   if (EEPROM.read(EEPromAddress) == 0xff)
     EEPROM.write(EEPromAddress, 0);
-	
+
   EEPROM.write(EEPromAddress + 1, value);
 }
 
@@ -3264,17 +3209,17 @@ void TeensyUserInterface::writeConfigurationByte(int EEPromAddress, byte value)
 
 //
 // read a configuration byte (8 bit) from the EEPROM
-//  Enter:  EEPromAddress = address in EEPROM to read from 
-//          defaultValue = default value to return if value has never been 
+//  Enter:  EEPromAddress = address in EEPROM to read from
+//          defaultValue = default value to return if value has never been
 //            written to the EEPROM
-//          note: 2 bytes of EEPROM space are used 
+//          note: 2 bytes of EEPROM space are used
 //  Exit:   byte value from EEPROM (or default value) returned
 //
 byte TeensyUserInterface::readConfigurationByte(int EEPromAddress, byte defaultValue)
 {
   if (EEPROM.read(EEPromAddress) == 0xff)
     return(defaultValue);
-	
+
     return(EEPROM.read(EEPromAddress + 1));
 }
 
@@ -3282,9 +3227,9 @@ byte TeensyUserInterface::readConfigurationByte(int EEPromAddress, byte defaultV
 
 //
 // write a configuration short (16 bit) to the EEPROM
-//  Enter:  EEPromAddress = address in EEPROM to write 
+//  Enter:  EEPromAddress = address in EEPROM to write
 //          value = 16 bit value to write to EEPROM
-//          note: 3 bytes of EEPROM space are used 
+//          note: 3 bytes of EEPROM space are used
 //
 void TeensyUserInterface::writeConfigurationShort(int EEPromAddress, short value)
 {
@@ -3294,7 +3239,7 @@ void TeensyUserInterface::writeConfigurationShort(int EEPromAddress, short value
     EEPROM.write(EEPromAddress, 0);
 
 	dataPntr = (byte*) (&value);
-  
+
   EEPROM.write(EEPromAddress + 1, dataPntr[0]);
   EEPROM.write(EEPromAddress + 2, dataPntr[1]);
 }
@@ -3303,24 +3248,24 @@ void TeensyUserInterface::writeConfigurationShort(int EEPromAddress, short value
 
 //
 // read a configuration short (16 bit) from the EEPROM
-//  Enter:  EEPromAddress = address in EEPROM to read from 
-//          defaultValue = default value to return if value has never been 
+//  Enter:  EEPromAddress = address in EEPROM to read from
+//          defaultValue = default value to return if value has never been
 //            written to the EEPROM
-//          note: 3 bytes of EEPROM space are used 
+//          note: 3 bytes of EEPROM space are used
 //  Exit:   short value from EEPROM (or default value) returned
 //
 short TeensyUserInterface::readConfigurationShort(int EEPromAddress, short defaultValue)
 {
   short value;
   byte *dataPntr;
-  
+
   if (EEPROM.read(EEPromAddress) == 0xff)
     return(defaultValue);
 
   dataPntr = (byte*) (&value);
 
   dataPntr[0] = EEPROM.read(EEPromAddress + 1);
-  dataPntr[1] = EEPROM.read(EEPromAddress + 2);  
+  dataPntr[1] = EEPROM.read(EEPromAddress + 2);
   return(value);
 }
 
@@ -3328,19 +3273,19 @@ short TeensyUserInterface::readConfigurationShort(int EEPromAddress, short defau
 
 //
 // write a configuration int (32 bit) to the EEPROM
-//  Enter:  EEPromAddress = address in EEPROM to write 
+//  Enter:  EEPromAddress = address in EEPROM to write
 //          value = 32 bit value to write to EEPROM
-//          note: 5 bytes of EEPROM space are used 
+//          note: 5 bytes of EEPROM space are used
 //
 void TeensyUserInterface::writeConfigurationInt(int EEPromAddress, int value)
 {
   byte *dataPntr;
-  
+
   if (EEPROM.read(EEPromAddress) == 0xff)
     EEPROM.write(EEPromAddress, 0);
 
   dataPntr = (byte*) (&value);
-  
+
   EEPROM.write(EEPromAddress + 1, dataPntr[0]);
   EEPROM.write(EEPromAddress + 2, dataPntr[1]);
   EEPROM.write(EEPromAddress + 3, dataPntr[2]);
@@ -3351,17 +3296,17 @@ void TeensyUserInterface::writeConfigurationInt(int EEPromAddress, int value)
 
 //
 // read a configuration int (32 bit) from the EEPROM
-//  Enter:  EEPromAddress = address in EEPROM to read from 
-//          defaultValue = default value to return if value has never been 
+//  Enter:  EEPromAddress = address in EEPROM to read from
+//          defaultValue = default value to return if value has never been
 //            written to the EEPROM
-//          note: 5 bytes of EEPROM space are used 
+//          note: 5 bytes of EEPROM space are used
 //  Exit:   long value from EEPROM (or default value) returned
 //
 int TeensyUserInterface::readConfigurationInt(int EEPromAddress, int defaultValue)
 {
   int value;
   byte *dataPntr;
-  
+
   if (EEPROM.read(EEPromAddress) == 0xff)
     return(defaultValue);
 
@@ -3378,19 +3323,19 @@ int TeensyUserInterface::readConfigurationInt(int EEPromAddress, int defaultValu
 
 //
 // write a configuration float (32 bit) to the EEPROM
-//  Enter:  EEPromAddress = address in EEPROM to write 
+//  Enter:  EEPromAddress = address in EEPROM to write
 //          value = 32 bit float to write to EEPROM
-//          note: 5 bytes of EEPROM space are used 
+//          note: 5 bytes of EEPROM space are used
 //
 void TeensyUserInterface::writeConfigurationFloat(int EEPromAddress, float value)
 {
   byte *dataPntr;
-  
+
   if (EEPROM.read(EEPromAddress) == 0xff)
     EEPROM.write(EEPromAddress, 0);
 
   dataPntr = (byte*) (&value);
-  
+
   EEPROM.write(EEPromAddress + 1, dataPntr[0]);
   EEPROM.write(EEPromAddress + 2, dataPntr[1]);
   EEPROM.write(EEPromAddress + 3, dataPntr[2]);
@@ -3401,17 +3346,17 @@ void TeensyUserInterface::writeConfigurationFloat(int EEPromAddress, float value
 
 //
 // read a configuration float (32 bit) from the EEPROM
-//  Enter:  EEPromAddress = address in EEPROM to read from 
-//          defaultValue = default value to return if value has never been 
+//  Enter:  EEPromAddress = address in EEPROM to read from
+//          defaultValue = default value to return if value has never been
 //            written to the EEPROM
-//          note: 5 bytes of EEPROM space are used 
+//          note: 5 bytes of EEPROM space are used
 //  Exit:   float value from EEPROM (or default value) returned
 //
 float TeensyUserInterface::readConfigurationFloat(int EEPromAddress, float defaultValue)
 {
   float value;
   byte *dataPntr;
-  
+
   if (EEPROM.read(EEPromAddress) == 0xff)
     return(defaultValue);
 
